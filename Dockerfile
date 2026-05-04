@@ -13,15 +13,17 @@ ENV RAILWAY_ENVIRONMENT=true
 RUN bun run build
 
 # ── Stage 2: runtime ────────────────────────────────────────────────────────────
-FROM node:22-alpine AS runner
+FROM oven/bun:1-alpine AS runner
 
 WORKDIR /app
 
-COPY --from=builder /app/.output ./.output
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY entrypoint.mjs ./
 
 ENV NODE_ENV=production
 ENV PORT=3000
 
 EXPOSE 3000
 
-CMD ["node", ".output/server/index.mjs"]
+CMD ["bun", "run", "entrypoint.mjs"]
