@@ -11,8 +11,8 @@ export default defineConfig(({ command }) => ({
     react(),
     tailwindcss(),
     tsconfigPaths({ projects: ["./tsconfig.json"] }),
-    // cloudflare só no build; no dev não é necessário
-    ...(command === "build"
+    // cloudflare só no build e apenas fora do Railway
+    ...(command === "build" && !process.env.RAILWAY_ENVIRONMENT
       ? [import("@cloudflare/vite-plugin").then((m) => m.cloudflare())]
       : []),
   ],
